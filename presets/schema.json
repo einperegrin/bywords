@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/einperegrin/bywords/presets/schema.json",
+  "title": "Bywords preset",
+  "type": "object",
+  "required": ["id", "language", "name", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Unique preset identifier, kebab-case. Matches the filename."
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2}$",
+      "description": "ISO 639-1 code of the language being learned."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable preset name, in English."
+    },
+    "description": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["term", "translations"],
+        "additionalProperties": false,
+        "properties": {
+          "term": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Word or phrase in the target language."
+          },
+          "translations": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": { "pattern": "^[a-z]{2}$" },
+            "additionalProperties": { "type": "string", "minLength": 1 },
+            "description": "Translations keyed by ISO 639-1 code."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional disambiguation, e.g. for words with multiple senses."
+          }
+        }
+      }
+    }
+  }
+}
