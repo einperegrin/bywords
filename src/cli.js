@@ -3,6 +3,9 @@ import { parseArgs } from 'node:util';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { initCommand } from './commands/init.js';
+import { listCommand } from './commands/list.js';
+import { resetCommand } from './commands/reset.js';
 
 const pkgPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json');
 const pkg = JSON.parse(await readFile(pkgPath, 'utf8'));
@@ -42,18 +45,23 @@ if (values.help || !command) {
   process.exit(0);
 }
 
-switch (command) {
-  case 'init':
-    console.log('TODO: interactive wizard');
-    break;
-  case 'list':
-    console.log('TODO: list presets');
-    break;
-  case 'reset':
-    console.log('TODO: reset settings');
-    break;
-  default:
-    console.error(`Unknown command: ${command}\n`);
-    process.stdout.write(USAGE);
-    process.exit(1);
+try {
+  switch (command) {
+    case 'init':
+      await initCommand();
+      break;
+    case 'list':
+      await listCommand();
+      break;
+    case 'reset':
+      await resetCommand();
+      break;
+    default:
+      console.error(`Unknown command: ${command}\n`);
+      process.stdout.write(USAGE);
+      process.exit(1);
+  }
+} catch (err) {
+  console.error(`Error: ${err.message}`);
+  process.exit(1);
 }
