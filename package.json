@@ -4,7 +4,7 @@
   "description": "Turn Claude Code's spinner words into language-learning flashcards.",
   "type": "module",
   "bin": {
-    "bywords": "./src/cli.js"
+    "bywords": "src/cli.js"
   },
   "files": [
     "src",
