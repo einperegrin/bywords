@@ -85,4 +85,4 @@ MVP ships with one preset:
 
 ## Status
 
-Pre-implementation. Design doc only.
+MVP complete. All three commands (`init`, `list`, `reset`) are implemented and working.

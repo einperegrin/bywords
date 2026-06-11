@@ -10,7 +10,11 @@ export async function loadPresets() {
   for (const file of files) {
     if (!file.endsWith('.json') || file === 'schema.json') continue;
     const content = await readFile(join(PRESETS_DIR, file), 'utf8');
-    presets.push(JSON.parse(content));
+    try {
+      presets.push(JSON.parse(content));
+    } catch {
+      throw new Error(`Preset file ${file} contains invalid JSON.`);
+    }
   }
   return presets.sort((a, b) => a.id.localeCompare(b.id));
 }
