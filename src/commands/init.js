@@ -3,13 +3,14 @@ import {
   readSettings,
   writeSettings,
   fileExists,
-  SETTINGS_PATH,
-  BACKUP_PATH,
+  settingsPaths,
 } from '../lib/settings.js';
 import { FORMATS, renderPreset, renderItem } from '../lib/format.js';
 import { selectFromList, confirm, closePrompt } from '../lib/prompt.js';
 
-export async function initCommand() {
+export async function initCommand(claudeDir) {
+  const { settings: SETTINGS_PATH, backup: BACKUP_PATH } = settingsPaths(claudeDir);
+
   const presets = await loadPresets();
   if (presets.length === 0) {
     console.error('No presets available.');
@@ -55,9 +56,9 @@ export async function initCommand() {
   }
 
   const hadBackupBefore = await fileExists(BACKUP_PATH);
-  const settings = await readSettings();
+  const settings = await readSettings(claudeDir);
   settings.spinnerVerbs = { mode: 'replace', verbs };
-  await writeSettings(settings);
+  await writeSettings(settings, claudeDir);
 
   if (!hadBackupBefore && (await fileExists(BACKUP_PATH))) {
     console.log(`\n✓ Backed up existing settings to ${BACKUP_PATH}`);
