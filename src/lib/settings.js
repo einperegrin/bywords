@@ -1,4 +1,4 @@
-import { readFile, writeFile, rename, mkdir, access, readdir } from 'node:fs/promises';
+import { readFile, writeFile, rename, mkdir, access, readdir, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join, dirname } from 'node:path';
 
@@ -7,6 +7,16 @@ export const DEFAULT_CLAUDE_DIR = join(homedir(), '.claude');
 export function settingsPaths(claudeDir) {
   const settings = join(claudeDir, 'settings.json');
   return { settings, backup: `${settings}.bak` };
+}
+
+export async function validateClaudeDir(p) {
+  let s;
+  try {
+    s = await stat(p);
+  } catch {
+    throw new Error(`Config directory does not exist: ${p}`);
+  }
+  if (!s.isDirectory()) throw new Error(`Not a directory: ${p}`);
 }
 
 export async function fileExists(p) {
@@ -27,7 +37,7 @@ export async function discoverClaudeDirs() {
     return [DEFAULT_CLAUDE_DIR];
   }
   const dirs = entries
-    .filter((e) => e.isDirectory() && e.name.startsWith('.claude'))
+    .filter((e) => e.isDirectory() && (e.name === '.claude' || e.name.startsWith('.claude-')))
     .map((e) => join(home, e.name))
     .sort();
   return dirs.length > 0 ? dirs : [DEFAULT_CLAUDE_DIR];

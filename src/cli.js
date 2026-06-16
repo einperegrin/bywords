@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { initCommand } from './commands/init.js';
 import { listCommand } from './commands/list.js';
 import { resetCommand } from './commands/reset.js';
-import { discoverClaudeDirs, DEFAULT_CLAUDE_DIR } from './lib/settings.js';
+import { discoverClaudeDirs, DEFAULT_CLAUDE_DIR, validateClaudeDir } from './lib/settings.js';
 import { selectFromList, closePrompt } from './lib/prompt.js';
 
 const pkgPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json');
@@ -50,16 +50,20 @@ if (values.help || !command) {
 }
 
 async function resolveClaudeDir() {
-  if (values['config-dir']) return values['config-dir'];
+  if (values['config-dir']) {
+    await validateClaudeDir(values['config-dir']);
+    return values['config-dir'];
+  }
 
   const dirs = await discoverClaudeDirs();
   if (dirs.length === 1) return dirs[0];
 
+  const defaultIdx = dirs.indexOf(DEFAULT_CLAUDE_DIR);
   console.log('Multiple Claude config directories found:');
   const chosen = await selectFromList(
     'Which config directory to use?',
     dirs.map((d) => ({ label: d, value: d })),
-    { defaultIndex: dirs.indexOf(DEFAULT_CLAUDE_DIR) >= 0 ? dirs.indexOf(DEFAULT_CLAUDE_DIR) : 0 },
+    { defaultIndex: defaultIdx >= 0 ? defaultIdx : 0 },
   );
   console.log('');
   return chosen;

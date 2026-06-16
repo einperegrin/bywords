@@ -33,6 +33,11 @@ export async function initCommand(claudeDir) {
     translationLang = await selectFromList('Pick a translation language', langs);
   }
 
+  if (preset.items.length === 0) {
+    console.error(`Preset "${preset.id}" has no items.`);
+    process.exit(1);
+  }
+
   console.log('\nDisplay format:');
   const sample = preset.items[0];
   const formatId = await selectFromList(
