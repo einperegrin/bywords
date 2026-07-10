@@ -1,9 +1,23 @@
-import { readFile, writeFile, rename, mkdir, access } from 'node:fs/promises';
+import { readFile, writeFile, rename, mkdir, access, readdir, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join, dirname } from 'node:path';
 
-export const SETTINGS_PATH = join(homedir(), '.claude', 'settings.json');
-export const BACKUP_PATH = `${SETTINGS_PATH}.bak`;
+export const DEFAULT_CLAUDE_DIR = join(homedir(), '.claude');
+
+export function settingsPaths(claudeDir) {
+  const settings = join(claudeDir, 'settings.json');
+  return { settings, backup: `${settings}.bak` };
+}
+
+export async function validateClaudeDir(p) {
+  let s;
+  try {
+    s = await stat(p);
+  } catch {
+    throw new Error(`Config directory does not exist: ${p}`);
+  }
+  if (!s.isDirectory()) throw new Error(`Not a directory: ${p}`);
+}
 
 export async function fileExists(p) {
   try {
@@ -14,24 +28,41 @@ export async function fileExists(p) {
   }
 }
 
-export async function readSettings() {
-  if (!(await fileExists(SETTINGS_PATH))) return {};
-  const content = await readFile(SETTINGS_PATH, 'utf8');
+export async function discoverClaudeDirs() {
+  const home = homedir();
+  let entries;
+  try {
+    entries = await readdir(home, { withFileTypes: true });
+  } catch {
+    return [DEFAULT_CLAUDE_DIR];
+  }
+  const dirs = entries
+    .filter((e) => e.isDirectory() && (e.name === '.claude' || e.name.startsWith('.claude-')))
+    .map((e) => join(home, e.name))
+    .sort();
+  return dirs.length > 0 ? dirs : [DEFAULT_CLAUDE_DIR];
+}
+
+export async function readSettings(claudeDir = DEFAULT_CLAUDE_DIR) {
+  const { settings: path } = settingsPaths(claudeDir);
+  if (!(await fileExists(path))) return {};
+  const content = await readFile(path, 'utf8');
   if (!content.trim()) return {};
   try {
     return JSON.parse(content);
   } catch {
-    throw new Error(`${SETTINGS_PATH} contains invalid JSON. Fix or delete it and try again.`);
+    throw new Error(`${path} contains invalid JSON. Fix or delete it and try again.`);
   }
 }
 
-export async function writeSettings(settings) {
-  await mkdir(dirname(SETTINGS_PATH), { recursive: true });
-  if ((await fileExists(SETTINGS_PATH)) && !(await fileExists(BACKUP_PATH))) {
-    const original = await readFile(SETTINGS_PATH, 'utf8');
-    await writeFile(BACKUP_PATH, original);
+export async function writeSettings(settings, claudeDir = DEFAULT_CLAUDE_DIR) {
+  const { settings: path, backup } = settingsPaths(claudeDir);
+  await mkdir(dirname(path), { recursive: true });
+  if ((await fileExists(path)) && !(await fileExists(backup))) {
+    const original = await readFile(path, 'utf8');
+    await writeFile(backup, original);
   }
-  const tmp = `${SETTINGS_PATH}.tmp`;
+  const tmp = `${path}.tmp`;
   await writeFile(tmp, JSON.stringify(settings, null, 2) + '\n');
-  await rename(tmp, SETTINGS_PATH);
+  await rename(tmp, path);
 }

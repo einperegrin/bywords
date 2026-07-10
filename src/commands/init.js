@@ -3,13 +3,14 @@ import {
   readSettings,
   writeSettings,
   fileExists,
-  SETTINGS_PATH,
-  BACKUP_PATH,
+  settingsPaths,
 } from '../lib/settings.js';
 import { FORMATS, renderPreset, renderItem } from '../lib/format.js';
 import { selectFromList, confirm, closePrompt } from '../lib/prompt.js';
 
-export async function initCommand() {
+export async function initCommand(claudeDir) {
+  const { settings: SETTINGS_PATH, backup: BACKUP_PATH } = settingsPaths(claudeDir);
+
   const presets = await loadPresets();
   if (presets.length === 0) {
     console.error('No presets available.');
@@ -30,6 +31,11 @@ export async function initCommand() {
   } else {
     console.log('\nAvailable translation languages:');
     translationLang = await selectFromList('Pick a translation language', langs);
+  }
+
+  if (preset.items.length === 0) {
+    console.error(`Preset "${preset.id}" has no items.`);
+    process.exit(1);
   }
 
   console.log('\nDisplay format:');
@@ -55,9 +61,9 @@ export async function initCommand() {
   }
 
   const hadBackupBefore = await fileExists(BACKUP_PATH);
-  const settings = await readSettings();
+  const settings = await readSettings(claudeDir);
   settings.spinnerVerbs = { mode: 'replace', verbs };
-  await writeSettings(settings);
+  await writeSettings(settings, claudeDir);
 
   if (!hadBackupBefore && (await fileExists(BACKUP_PATH))) {
     console.log(`\n✓ Backed up existing settings to ${BACKUP_PATH}`);
