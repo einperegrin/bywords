@@ -15,13 +15,18 @@ Requires Node.js ≥ 20 and [Claude Code](https://claude.ai/code).
 ## Usage
 
 ```sh
-bywords init          # pick a preset, translation language, and format → writes to settings.json
+bywords init          # set the spinner words to a preset (replaces what's there)
+bywords add           # add a preset's words on top of the ones already set
 bywords list          # show available presets
 bywords status        # show what's currently written to settings.json
 bywords import <csv>  # import a CSV word list into your user presets
 bywords reset         # remove the spinnerVerbs block from settings.json
 bywords validate      # check every bundled and user preset against the schema
 ```
+
+`init` replaces the spinner words — the point of the tool is to swap Claude Code's
+built-in verbs for words you're learning. When you want to grow your list, `add`
+keeps what's there and appends another preset's words (duplicates are dropped).
 
 `init` is an interactive wizard:
 
@@ -61,9 +66,10 @@ bywords init --preset es-top30-verbs --lang ru --format term-translation --yes
 | `--preset <id>` | Preset id (as shown by `bywords list`) |
 | `--lang <code>` | Translation language, e.g. `en`, `ru` |
 | `--format <id>` | `term-translation`, `translation-term`, or `term-only` |
-| `--mode <id>` | `replace` (only your words) or `append` (mix into the built-ins) |
 | `-y`, `--yes` | Skip the confirmation prompt |
 | `--config-dir <path>` | Claude config directory (default: `~/.claude`) |
+
+The same `--preset` / `--lang` / `--format` / `--yes` flags work with `add`.
 
 ## Presets
 

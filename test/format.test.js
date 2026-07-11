@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { renderItem, renderPreset, FORMATS } from '../src/lib/format.js';
+import { renderItem, renderPreset, FORMATS, mergeVerbs } from '../src/lib/format.js';
 
 const item = { term: 'hablar', translations: { en: 'to speak', ru: 'говорить' } };
 
@@ -27,4 +27,16 @@ test('every declared format id renders', () => {
 test('renderPreset maps every item', () => {
   const preset = { items: [item, { term: 'ser', translations: { en: 'to be' } }] };
   assert.deepEqual(renderPreset(preset, 'en', 'term-only'), ['hablar', 'ser']);
+});
+
+test('mergeVerbs appends new verbs and drops duplicates', () => {
+  const { merged, added } = mergeVerbs(['a', 'b'], ['b', 'c', 'a', 'd']);
+  assert.deepEqual(merged, ['a', 'b', 'c', 'd']);
+  assert.equal(added, 2);
+});
+
+test('mergeVerbs from an empty list keeps order and adds all', () => {
+  const { merged, added } = mergeVerbs([], ['x', 'y']);
+  assert.deepEqual(merged, ['x', 'y']);
+  assert.equal(added, 2);
 });

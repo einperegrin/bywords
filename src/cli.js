@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { initCommand } from './commands/init.js';
+import { addCommand } from './commands/add.js';
 import { listCommand } from './commands/list.js';
 import { resetCommand } from './commands/reset.js';
 import { validateCommand } from './commands/validate.js';
@@ -21,7 +22,8 @@ Usage:
   bywords <command> [options]
 
 Commands:
-  init             Pick a preset and write it to Claude Code's settings.json
+  init             Set the spinner words to a preset (replaces what's there)
+  add              Add a preset's words to the ones already set
   list             Show available presets
   status           Show the spinnerVerbs currently written to settings.json
   import <file>    Import a CSV word list into your user presets
@@ -30,10 +32,9 @@ Commands:
 
 Options:
   --config-dir <path>  Claude config directory to use (default: ~/.claude)
-  --preset <id>        (init) Preset id, skips the interactive picker
-  --lang <code>        (init) Translation language, e.g. en, ru
-  --format <id>        (init) term-translation | translation-term | term-only
-  --mode <id>          (init) replace | append
+  --preset <id>        (init/add) Preset id, skips the interactive picker
+  --lang <code>        (init/add) Translation language, e.g. en, ru
+  --format <id>        (init/add) term-translation | translation-term | term-only
   --id <id>            (import) Preset id (default: from filename)
   --language <code>    (import) Language being learned, e.g. es
   --name <name>        (import) Human-readable preset name
@@ -53,7 +54,6 @@ const { values, positionals } = parseArgs({
     preset: { type: 'string' },
     lang: { type: 'string' },
     format: { type: 'string' },
-    mode: { type: 'string' },
     id: { type: 'string' },
     language: { type: 'string' },
     name: { type: 'string' },
@@ -102,7 +102,16 @@ try {
         preset: values.preset,
         lang: values.lang,
         format: values.format,
-        mode: values.mode,
+        yes: values.yes,
+      });
+      break;
+    }
+    case 'add': {
+      const claudeDir = await resolveClaudeDir();
+      await addCommand(claudeDir, {
+        preset: values.preset,
+        lang: values.lang,
+        format: values.format,
         yes: values.yes,
       });
       break;

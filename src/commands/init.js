@@ -9,16 +9,18 @@ import {
   fileExists,
   settingsPaths,
 } from '../lib/settings.js';
-import { FORMATS, MODES, renderPreset, renderItem } from '../lib/format.js';
+import { FORMATS, renderPreset, renderItem } from '../lib/format.js';
 import { selectFromList, confirm, closePrompt } from '../lib/prompt.js';
 
 /**
- * @param {string} claudeDir
- * @param {{ preset?: string, lang?: string, format?: string, mode?: string, yes?: boolean }} [opts]
+ * Run the preset / language / format selection flow (interactive unless the
+ * matching flags are supplied) and return the rendered verbs. Shared by `init`
+ * and `add`. Does not read or write settings, and does not close the prompt.
+ *
+ * @param {{ preset?: string, lang?: string, format?: string, yes?: boolean }} [opts]
+ * @returns {Promise<{ verbs: string[], preset: object }>}
  */
-export async function initCommand(claudeDir, opts = {}) {
-  const { settings: SETTINGS_PATH, backup: BACKUP_PATH } = settingsPaths(claudeDir);
-
+export async function selectVerbs(opts = {}) {
   const presets = await loadPresets();
   if (presets.length === 0) {
     console.error('No presets available.');
@@ -92,27 +94,32 @@ export async function initCommand(claudeDir, opts = {}) {
     );
   }
 
-  // Mode
-  let mode;
-  if (opts.mode) {
-    if (!MODES.some((m) => m.id === opts.mode)) {
-      const ids = MODES.map((m) => m.id).join(', ');
-      throw new Error(`Unknown mode "${opts.mode}". Available: ${ids}`);
-    }
-    mode = opts.mode;
-  } else if (opts.yes) {
-    mode = MODES[0].id;
-  } else {
-    console.log('\nMode:');
-    mode = await selectFromList(
-      'Pick a mode',
-      MODES.map((m) => ({ label: m.label, value: m.id })),
+  return { verbs: renderPreset(preset, translationLang, formatId), preset };
+}
+
+/**
+ * @param {string} claudeDir
+ * @param {{ preset?: string, lang?: string, format?: string, yes?: boolean }} [opts]
+ */
+export async function initCommand(claudeDir, opts = {}) {
+  const { settings: SETTINGS_PATH, backup: BACKUP_PATH } = settingsPaths(claudeDir);
+
+  const settings = await readSettings(claudeDir);
+  const existing = Array.isArray(settings.spinnerVerbs?.verbs)
+    ? settings.spinnerVerbs.verbs
+    : [];
+
+  const { verbs } = await selectVerbs(opts);
+
+  console.log(`\nPreview (first 3 of ${verbs.length}):`);
+  for (const v of verbs.slice(0, 3)) console.log(`  ${v}`);
+
+  if (existing.length > 0) {
+    console.log(
+      `\nThis replaces the ${existing.length} word(s) currently set ` +
+        '(use `bywords add` to keep them and add more).',
     );
   }
-
-  const verbs = renderPreset(preset, translationLang, formatId);
-  console.log(`\nPreview (${mode}, first 3 of ${verbs.length}):`);
-  for (const v of verbs.slice(0, 3)) console.log(`  ${v}`);
 
   console.log(`\nTarget: ${SETTINGS_PATH}`);
   let proceed = true;
@@ -124,8 +131,7 @@ export async function initCommand(claudeDir, opts = {}) {
   }
 
   const hadBackupBefore = await fileExists(BACKUP_PATH);
-  const settings = await readSettings(claudeDir);
-  settings.spinnerVerbs = { mode, verbs };
+  settings.spinnerVerbs = { mode: 'replace', verbs };
   await writeSettings(settings, claudeDir);
 
   if (!hadBackupBefore && (await fileExists(BACKUP_PATH))) {
