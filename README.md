@@ -15,10 +15,12 @@ Requires Node.js ≥ 20 and [Claude Code](https://claude.ai/code).
 ## Usage
 
 ```sh
-bywords init      # pick a preset, translation language, and format → writes to settings.json
-bywords list      # show available presets
-bywords reset     # remove the spinnerVerbs block from settings.json
-bywords validate  # check every bundled and user preset against the schema
+bywords init          # pick a preset, translation language, and format → writes to settings.json
+bywords list          # show available presets
+bywords status        # show what's currently written to settings.json
+bywords import <csv>  # import a CSV word list into your user presets
+bywords reset         # remove the spinnerVerbs block from settings.json
+bywords validate      # check every bundled and user preset against the schema
 ```
 
 `init` is an interactive wizard:
@@ -59,6 +61,7 @@ bywords init --preset es-top30-verbs --lang ru --format term-translation --yes
 | `--preset <id>` | Preset id (as shown by `bywords list`) |
 | `--lang <code>` | Translation language, e.g. `en`, `ru` |
 | `--format <id>` | `term-translation`, `translation-term`, or `term-only` |
+| `--mode <id>` | `replace` (only your words) or `append` (mix into the built-ins) |
 | `-y`, `--yes` | Skip the confirmation prompt |
 | `--config-dir <path>` | Claude config directory (default: `~/.claude`) |
 
@@ -81,6 +84,25 @@ $XDG_CONFIG_HOME/bywords/presets   # default: ~/.config/bywords/presets
 Override the location with the `BYWORDS_PRESETS_DIR` environment variable. A user
 preset with the same `id` as a bundled one takes precedence. Run `bywords validate`
 to check your files against the schema before using them.
+
+### Import from a spreadsheet
+
+If your words live in a spreadsheet, export them as CSV and import — no JSON by
+hand. The header needs a `term` column plus one or more 2-letter language columns:
+
+```csv
+term,en,ru
+hablar,to speak,говорить
+ser,to be,быть
+```
+
+```sh
+bywords import words.csv --id es-mine --language es --name "My Spanish words"
+```
+
+This writes a validated preset into your user preset directory. `--id` defaults to
+the filename, `--language` (the language you're learning) is asked interactively if
+omitted, and extra non-language columns (e.g. a `notes` column) are ignored.
 
 ## Contributing
 

@@ -4,6 +4,11 @@ export const FORMATS = [
   { id: 'term-only', label: 'term only', template: '{term}' },
 ];
 
+export const MODES = [
+  { id: 'replace', label: 'replace — show only these words' },
+  { id: 'append', label: "append — mix these into Claude Code's built-in words" },
+];
+
 export function renderItem(item, translationLang, formatId) {
   const format = FORMATS.find((f) => f.id === formatId);
   if (!format) throw new Error(`Unknown format: ${formatId}`);
