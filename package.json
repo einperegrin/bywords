@@ -23,6 +23,8 @@
     "cli"
   ],
   "scripts": {
-    "start": "node src/cli.js"
+    "start": "node src/cli.js",
+    "test": "node --test",
+    "validate": "node src/cli.js validate"
   }
 }
