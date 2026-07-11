@@ -6,8 +6,9 @@ import { dirname, join } from 'node:path';
 import { initCommand } from './commands/init.js';
 import { listCommand } from './commands/list.js';
 import { resetCommand } from './commands/reset.js';
+import { validateCommand } from './commands/validate.js';
 import { discoverClaudeDirs, DEFAULT_CLAUDE_DIR, validateClaudeDir } from './lib/settings.js';
-import { selectFromList, closePrompt } from './lib/prompt.js';
+import { selectFromList } from './lib/prompt.js';
 
 const pkgPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json');
 const pkg = JSON.parse(await readFile(pkgPath, 'utf8'));
@@ -21,11 +22,19 @@ Commands:
   init      Pick a preset and write it to Claude Code's settings.json
   list      Show available presets
   reset     Remove the spinnerVerbs block this tool wrote
+  validate  Check every bundled and user preset against the schema
 
 Options:
   --config-dir <path>  Claude config directory to use (default: ~/.claude)
+  --preset <id>        (init) Preset id, skips the interactive picker
+  --lang <code>        (init) Translation language, e.g. en, ru
+  --format <id>        (init) term-translation | translation-term | term-only
+  -y, --yes            (init) Skip the confirmation prompt
   -h, --help           Show this help
   -v, --version        Show version
+
+Custom presets: drop JSON files in
+  ${'$XDG_CONFIG_HOME'}/bywords/presets  (default: ~/.config/bywords/presets)
 `;
 
 const { values, positionals } = parseArgs({
@@ -33,6 +42,10 @@ const { values, positionals } = parseArgs({
     help: { type: 'boolean', short: 'h' },
     version: { type: 'boolean', short: 'v' },
     'config-dir': { type: 'string' },
+    preset: { type: 'string' },
+    lang: { type: 'string' },
+    format: { type: 'string' },
+    yes: { type: 'boolean', short: 'y' },
   },
   allowPositionals: true,
 });
@@ -73,11 +86,19 @@ try {
   switch (command) {
     case 'init': {
       const claudeDir = await resolveClaudeDir();
-      await initCommand(claudeDir);
+      await initCommand(claudeDir, {
+        preset: values.preset,
+        lang: values.lang,
+        format: values.format,
+        yes: values.yes,
+      });
       break;
     }
     case 'list':
       await listCommand();
+      break;
+    case 'validate':
+      await validateCommand();
       break;
     case 'reset': {
       const claudeDir = await resolveClaudeDir();
