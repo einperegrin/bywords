@@ -1,0 +1,540 @@
+{
+  "id": "sv-irregular-verbs",
+  "language": "sv",
+  "name": "76 Swedish irregular verbs",
+  "description": "All four forms (infinitiv, presens, preteritum, supinum) of 76 common Swedish irregular verbs, ordered by frequency.",
+  "items": [
+    {
+      "term": "vara, är, var, varit",
+      "translations": {
+        "en": "to be",
+        "ru": "быть"
+      }
+    },
+    {
+      "term": "ha, har, hade, haft",
+      "translations": {
+        "en": "to have",
+        "ru": "иметь"
+      }
+    },
+    {
+      "term": "göra, gör, gjorde, gjort",
+      "translations": {
+        "en": "to do, to make",
+        "ru": "делать"
+      }
+    },
+    {
+      "term": "gå, går, gick, gått",
+      "translations": {
+        "en": "to go, to walk",
+        "ru": "идти, ходить"
+      }
+    },
+    {
+      "term": "komma, kommer, kom, kommit",
+      "translations": {
+        "en": "to come",
+        "ru": "приходить, приезжать"
+      }
+    },
+    {
+      "term": "få, får, fick, fått",
+      "translations": {
+        "en": "to get, may",
+        "ru": "получать, мочь"
+      }
+    },
+    {
+      "term": "säga, säger, sade, sagt",
+      "translations": {
+        "en": "to say",
+        "ru": "говорить, сказать"
+      }
+    },
+    {
+      "term": "se, ser, såg, sett",
+      "translations": {
+        "en": "to see",
+        "ru": "видеть, смотреть"
+      }
+    },
+    {
+      "term": "ta, tar, tog, tagit",
+      "translations": {
+        "en": "to take",
+        "ru": "брать, взять"
+      }
+    },
+    {
+      "term": "bli, blir, blev, blivit",
+      "translations": {
+        "en": "to become",
+        "ru": "становиться"
+      }
+    },
+    {
+      "term": "ge, ger, gav, givit",
+      "translations": {
+        "en": "to give",
+        "ru": "давать"
+      }
+    },
+    {
+      "term": "stå, står, stod, stått",
+      "translations": {
+        "en": "to stand",
+        "ru": "стоять"
+      }
+    },
+    {
+      "term": "sitta, sitter, satt, suttit",
+      "translations": {
+        "en": "to sit",
+        "ru": "сидеть"
+      }
+    },
+    {
+      "term": "ligga, ligger, låg, legat",
+      "translations": {
+        "en": "to lie",
+        "ru": "лежать"
+      }
+    },
+    {
+      "term": "dricka, dricker, drack, druckit",
+      "translations": {
+        "en": "to drink",
+        "ru": "пить"
+      }
+    },
+    {
+      "term": "äta, äter, åt, ätit",
+      "translations": {
+        "en": "to eat",
+        "ru": "есть, кушать"
+      }
+    },
+    {
+      "term": "skriva, skriver, skrev, skrivit",
+      "translations": {
+        "en": "to write",
+        "ru": "писать"
+      }
+    },
+    {
+      "term": "veta, vet, visste, vetat",
+      "translations": {
+        "en": "to know",
+        "ru": "знать"
+      }
+    },
+    {
+      "term": "dra, drar, drog, dragit",
+      "translations": {
+        "en": "to pull, to draw",
+        "ru": "тянуть, тащить"
+      }
+    },
+    {
+      "term": "finna, finner, fann, funnit",
+      "translations": {
+        "en": "to find",
+        "ru": "находить"
+      }
+    },
+    {
+      "term": "be, ber, bad, bett",
+      "translations": {
+        "en": "to ask, to pray",
+        "ru": "просить, молиться"
+      }
+    },
+    {
+      "term": "binda, binder, band, bundit",
+      "translations": {
+        "en": "to bind, to tie",
+        "ru": "связывать"
+      }
+    },
+    {
+      "term": "bita, biter, bet, bitit",
+      "translations": {
+        "en": "to bite",
+        "ru": "кусать"
+      }
+    },
+    {
+      "term": "bjuda, bjuder, bjöd, bjudit",
+      "translations": {
+        "en": "to offer, to invite",
+        "ru": "предлагать, приглашать"
+      }
+    },
+    {
+      "term": "brinna, brinner, brann, brunnit",
+      "translations": {
+        "en": "to burn",
+        "ru": "гореть"
+      }
+    },
+    {
+      "term": "bryta, bryter, bröt, brutit",
+      "translations": {
+        "en": "to break",
+        "ru": "ломать"
+      }
+    },
+    {
+      "term": "bära, bär, bar, burit",
+      "translations": {
+        "en": "to carry, to bear",
+        "ru": "нести, носить"
+      }
+    },
+    {
+      "term": "driva, driver, drev, drivit",
+      "translations": {
+        "en": "to drive, to drift",
+        "ru": "гнать, управлять"
+      }
+    },
+    {
+      "term": "dö, dör, dog, dött",
+      "translations": {
+        "en": "to die",
+        "ru": "умирать"
+      }
+    },
+    {
+      "term": "falla, faller, föll, fallit",
+      "translations": {
+        "en": "to fall",
+        "ru": "падать"
+      }
+    },
+    {
+      "term": "flyga, flyger, flög, flugit",
+      "translations": {
+        "en": "to fly",
+        "ru": "летать"
+      }
+    },
+    {
+      "term": "flyta, flyter, flöt, flutit",
+      "translations": {
+        "en": "to float, to flow",
+        "ru": "плыть, течь"
+      }
+    },
+    {
+      "term": "frysa, fryser, frös, frusit",
+      "translations": {
+        "en": "to freeze",
+        "ru": "мёрзнуть, замерзать"
+      }
+    },
+    {
+      "term": "försvinna, försvinner, försvann, försvunnit",
+      "translations": {
+        "en": "to disappear",
+        "ru": "исчезать"
+      }
+    },
+    {
+      "term": "gripa, griper, grep, gripit",
+      "translations": {
+        "en": "to seize, to catch",
+        "ru": "хватать, схватывать"
+      }
+    },
+    {
+      "term": "gråta, gråter, grät, gråtit",
+      "translations": {
+        "en": "to cry, to weep",
+        "ru": "плакать"
+      }
+    },
+    {
+      "term": "heta, heter, hette, hetat",
+      "translations": {
+        "en": "to be named, to be called",
+        "ru": "называться"
+      }
+    },
+    {
+      "term": "hugga, hugger, högg, huggit",
+      "translations": {
+        "en": "to cut, to hew",
+        "ru": "рубить"
+      }
+    },
+    {
+      "term": "hålla, håller, höll, hållit",
+      "translations": {
+        "en": "to hold",
+        "ru": "держать"
+      }
+    },
+    {
+      "term": "kliva, kliver, klev, klivit",
+      "translations": {
+        "en": "to stride, to step",
+        "ru": "шагать"
+      }
+    },
+    {
+      "term": "knyta, knyter, knöt, knutit",
+      "translations": {
+        "en": "to tie, to knot",
+        "ru": "завязывать"
+      }
+    },
+    {
+      "term": "krypa, kryper, kröp, krupit",
+      "translations": {
+        "en": "to crawl, to creep",
+        "ru": "ползать"
+      }
+    },
+    {
+      "term": "le, ler, log, lett",
+      "translations": {
+        "en": "to smile",
+        "ru": "улыбаться"
+      }
+    },
+    {
+      "term": "lida, lider, led, lidit",
+      "translations": {
+        "en": "to suffer",
+        "ru": "страдать"
+      }
+    },
+    {
+      "term": "ljuga, ljuger, ljög, ljugit",
+      "translations": {
+        "en": "to lie (tell lies)",
+        "ru": "лгать"
+      }
+    },
+    {
+      "term": "låta, låter, lät, låtit",
+      "translations": {
+        "en": "to let, to sound",
+        "ru": "позволять, звучать"
+      }
+    },
+    {
+      "term": "lägga, lägger, lade, lagt",
+      "translations": {
+        "en": "to lay, to put",
+        "ru": "класть"
+      }
+    },
+    {
+      "term": "njuta, njuter, njöt, njutit",
+      "translations": {
+        "en": "to enjoy",
+        "ru": "наслаждаться"
+      }
+    },
+    {
+      "term": "nysa, nyser, nös, nyst",
+      "translations": {
+        "en": "to sneeze",
+        "ru": "чихать"
+      }
+    },
+    {
+      "term": "rida, rider, red, ridit",
+      "translations": {
+        "en": "to ride",
+        "ru": "ездить верхом"
+      }
+    },
+    {
+      "term": "riva, river, rev, rivit",
+      "translations": {
+        "en": "to scratch, to tear",
+        "ru": "царапать, рвать"
+      }
+    },
+    {
+      "term": "sjunga, sjunger, sjöng, sjungit",
+      "translations": {
+        "en": "to sing",
+        "ru": "петь"
+      }
+    },
+    {
+      "term": "sjunka, sjunker, sjönk, sjunkit",
+      "translations": {
+        "en": "to sink",
+        "ru": "тонуть"
+      }
+    },
+    {
+      "term": "skina, skiner, sken, skinit",
+      "translations": {
+        "en": "to shine",
+        "ru": "светить, сиять"
+      }
+    },
+    {
+      "term": "skjuta, skjuter, sköt, skjutit",
+      "translations": {
+        "en": "to shoot",
+        "ru": "стрелять"
+      }
+    },
+    {
+      "term": "skrika, skriker, skrek, skrikit",
+      "translations": {
+        "en": "to scream, to cry",
+        "ru": "кричать"
+      }
+    },
+    {
+      "term": "skära, skär, skar, skurit",
+      "translations": {
+        "en": "to cut",
+        "ru": "резать"
+      }
+    },
+    {
+      "term": "slita, sliter, slet, slitit",
+      "translations": {
+        "en": "to tear, to pull",
+        "ru": "тянуть, рвать"
+      }
+    },
+    {
+      "term": "slå, slår, slog, slagit",
+      "translations": {
+        "en": "to hit, to strike",
+        "ru": "бить, ударять"
+      }
+    },
+    {
+      "term": "smyga, smyger, smög, smugit",
+      "translations": {
+        "en": "to sneak, to slip",
+        "ru": "красться"
+      }
+    },
+    {
+      "term": "snyta, snyter, snöt, snutit",
+      "translations": {
+        "en": "to blow one's nose",
+        "ru": "сморкаться"
+      }
+    },
+    {
+      "term": "sova, sover, sov, sovit",
+      "translations": {
+        "en": "to sleep",
+        "ru": "спать"
+      }
+    },
+    {
+      "term": "spricka, spricker, sprack, spruckit",
+      "translations": {
+        "en": "to crack",
+        "ru": "трескаться"
+      }
+    },
+    {
+      "term": "sprida, sprider, spred, spridit",
+      "translations": {
+        "en": "to spread",
+        "ru": "распространять"
+      }
+    },
+    {
+      "term": "springa, springer, sprang, sprungit",
+      "translations": {
+        "en": "to run",
+        "ru": "бежать"
+      }
+    },
+    {
+      "term": "stiga, stiger, steg, stigit",
+      "translations": {
+        "en": "to step, to ascend",
+        "ru": "подниматься"
+      }
+    },
+    {
+      "term": "stjäla, stjäler, stal, stulit",
+      "translations": {
+        "en": "to steal",
+        "ru": "красть"
+      }
+    },
+    {
+      "term": "stryka, stryker, strök, strukit",
+      "translations": {
+        "en": "to stroke, to cancel",
+        "ru": "гладить, вычеркивать"
+      }
+    },
+    {
+      "term": "sälja, säljer, sålde, sålt",
+      "translations": {
+        "en": "to sell",
+        "ru": "продавать"
+      }
+    },
+    {
+      "term": "sätta, sätter, satte, satt",
+      "translations": {
+        "en": "to put, to set",
+        "ru": "ставить, класть"
+      }
+    },
+    {
+      "term": "tiga, tiger, teg, tigit",
+      "translations": {
+        "en": "to be silent",
+        "ru": "молчать"
+      }
+    },
+    {
+      "term": "vika, viker, vek, vikit",
+      "translations": {
+        "en": "to fold",
+        "ru": "складывать"
+      }
+    },
+    {
+      "term": "vinna, vinner, vann, vunnit",
+      "translations": {
+        "en": "to win, to gain",
+        "ru": "побеждать, выигрывать"
+      }
+    },
+    {
+      "term": "välja, väljer, valde, valt",
+      "translations": {
+        "en": "to choose",
+        "ru": "выбирать"
+      }
+    },
+    {
+      "term": "vänja, vänjer, vande, vant",
+      "translations": {
+        "en": "to accustom",
+        "ru": "приучать"
+      }
+    },
+    {
+      "term": "växa, växer, växte, vuxit",
+      "translations": {
+        "en": "to grow",
+        "ru": "расти"
+      }
+    }
+  ]
+}

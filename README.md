@@ -67,6 +67,7 @@ bywords init --preset es-top30-verbs --lang ru --format term-translation --yes
 | ID | Language | Items | Translations |
 |----|----------|-------|--------------|
 | `es-top30-verbs` | Spanish | 30 | `en`, `ru` |
+| `sv-irregular-verbs` | Swedish | 76 | `en`, `ru` |
 
 ## Your own word lists
 
