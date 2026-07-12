@@ -67,6 +67,7 @@ bywords init --preset es-top30-verbs --lang ru --format term-translation --yes
 | ID | Language | Items | Translations |
 |----|----------|-------|--------------|
 | `es-top30-verbs` | Spanish | 30 | `en`, `ru` |
+| `fi-verb-types` | Finnish | 50 | `en`, `ru`, `sv` |
 
 ## Your own word lists
 

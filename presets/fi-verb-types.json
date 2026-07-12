@@ -1,0 +1,409 @@
+{
+  "id": "fi-verb-types",
+  "language": "fi",
+  "name": "50 common Finnish verbs covering all verb types and consonant gradation",
+  "description": "Principal parts (A-infinitive, 1st person singular present, 3rd person singular past, NUT participle) of 50 common Finnish verbs. Covers all six Kotus verb types and the main consonant gradation (KPT) patterns.",
+  "items": [
+    {
+      "term": "olla, olen, oli, ollut",
+      "translations": {
+        "en": "to be",
+        "ru": "быть",
+        "sv": "vara"
+      }
+    },
+    {
+      "term": "tehdä, teen, teki, tehnyt",
+      "translations": {
+        "en": "to do, to make",
+        "ru": "делать",
+        "sv": "göra"
+      }
+    },
+    {
+      "term": "tulla, tulen, tuli, tullut",
+      "translations": {
+        "en": "to come; to become",
+        "ru": "приходить; становиться",
+        "sv": "komma; bli"
+      }
+    },
+    {
+      "term": "mennä, menen, meni, mennyt",
+      "translations": {
+        "en": "to go",
+        "ru": "идти",
+        "sv": "gå"
+      }
+    },
+    {
+      "term": "saada, saan, sai, saanut",
+      "translations": {
+        "en": "to get, to receive; may",
+        "ru": "получать; можно",
+        "sv": "få"
+      }
+    },
+    {
+      "term": "voida, voin, voi, voinut",
+      "translations": {
+        "en": "to be able to",
+        "ru": "мочь",
+        "sv": "kunna"
+      }
+    },
+    {
+      "term": "haluta, haluan, halusi, halunnut",
+      "translations": {
+        "en": "to want",
+        "ru": "хотеть",
+        "sv": "vilja"
+      }
+    },
+    {
+      "term": "sanoa, sanon, sanoi, sanonut",
+      "translations": {
+        "en": "to say",
+        "ru": "говорить, сказать",
+        "sv": "säga"
+      }
+    },
+    {
+      "term": "tietää, tiedän, tiesi, tiennyt",
+      "translations": {
+        "en": "to know",
+        "ru": "знать",
+        "sv": "veta"
+      }
+    },
+    {
+      "term": "nähdä, näen, näki, nähnyt",
+      "translations": {
+        "en": "to see",
+        "ru": "видеть",
+        "sv": "se"
+      }
+    },
+    {
+      "term": "antaa, annan, antoi, antanut",
+      "translations": {
+        "en": "to give",
+        "ru": "давать",
+        "sv": "ge"
+      }
+    },
+    {
+      "term": "ottaa, otan, otti, ottanut",
+      "translations": {
+        "en": "to take",
+        "ru": "брать",
+        "sv": "ta"
+      }
+    },
+    {
+      "term": "käyttää, käytän, käytti, käyttänyt",
+      "translations": {
+        "en": "to use",
+        "ru": "использовать",
+        "sv": "använda"
+      }
+    },
+    {
+      "term": "löytää, löydän, löysi, löytänyt",
+      "translations": {
+        "en": "to find",
+        "ru": "находить",
+        "sv": "hitta"
+      }
+    },
+    {
+      "term": "pitää, pidän, piti, pitänyt",
+      "translations": {
+        "en": "to like; must",
+        "ru": "любить; нужно",
+        "sv": "tycka om; måste"
+      }
+    },
+    {
+      "term": "lähteä, lähden, lähti, lähtenyt",
+      "translations": {
+        "en": "to leave, to depart",
+        "ru": "уходить",
+        "sv": "ge sig av"
+      }
+    },
+    {
+      "term": "käydä, käyn, kävi, käynyt",
+      "translations": {
+        "en": "to visit, to go (and come back)",
+        "ru": "ходить (куда-либо)",
+        "sv": "besöka"
+      }
+    },
+    {
+      "term": "ostaa, ostan, osti, ostanut",
+      "translations": {
+        "en": "to buy",
+        "ru": "покупать",
+        "sv": "köpa"
+      }
+    },
+    {
+      "term": "myydä, myyn, myi, myynyt",
+      "translations": {
+        "en": "to sell",
+        "ru": "продавать",
+        "sv": "sälja"
+      }
+    },
+    {
+      "term": "maksaa, maksan, maksoi, maksanut",
+      "translations": {
+        "en": "to pay; to cost",
+        "ru": "платить; стоить",
+        "sv": "betala; kosta"
+      }
+    },
+    {
+      "term": "syödä, syön, söi, syönyt",
+      "translations": {
+        "en": "to eat",
+        "ru": "есть",
+        "sv": "äta"
+      }
+    },
+    {
+      "term": "juoda, juon, joi, juonut",
+      "translations": {
+        "en": "to drink",
+        "ru": "пить",
+        "sv": "dricka"
+      }
+    },
+    {
+      "term": "puhua, puhun, puhui, puhunut",
+      "translations": {
+        "en": "to speak",
+        "ru": "говорить",
+        "sv": "tala"
+      }
+    },
+    {
+      "term": "lukea, luen, luki, lukenut",
+      "translations": {
+        "en": "to read",
+        "ru": "читать",
+        "sv": "läsa"
+      }
+    },
+    {
+      "term": "kirjoittaa, kirjoitan, kirjoitti, kirjoittanut",
+      "translations": {
+        "en": "to write",
+        "ru": "писать",
+        "sv": "skriva"
+      }
+    },
+    {
+      "term": "ymmärtää, ymmärrän, ymmärsi, ymmärtänyt",
+      "translations": {
+        "en": "to understand",
+        "ru": "понимать",
+        "sv": "förstå"
+      }
+    },
+    {
+      "term": "muistaa, muistan, muisti, muistanut",
+      "translations": {
+        "en": "to remember",
+        "ru": "помнить",
+        "sv": "komma ihåg"
+      }
+    },
+    {
+      "term": "unohtaa, unohdan, unohti, unohtanut",
+      "translations": {
+        "en": "to forget",
+        "ru": "забывать",
+        "sv": "glömma"
+      }
+    },
+    {
+      "term": "oppia, opin, oppi, oppinut",
+      "translations": {
+        "en": "to learn",
+        "ru": "научиться",
+        "sv": "lära sig"
+      }
+    },
+    {
+      "term": "opiskella, opiskelen, opiskeli, opiskellut",
+      "translations": {
+        "en": "to study",
+        "ru": "учиться, изучать",
+        "sv": "studera"
+      }
+    },
+    {
+      "term": "asua, asun, asui, asunut",
+      "translations": {
+        "en": "to live (somewhere)",
+        "ru": "жить (где-либо)",
+        "sv": "bo"
+      }
+    },
+    {
+      "term": "elää, elän, eli, elänyt",
+      "translations": {
+        "en": "to live",
+        "ru": "жить",
+        "sv": "leva"
+      }
+    },
+    {
+      "term": "nukkua, nukun, nukkui, nukkunut",
+      "translations": {
+        "en": "to sleep",
+        "ru": "спать",
+        "sv": "sova"
+      }
+    },
+    {
+      "term": "herätä, herään, heräsi, herännyt",
+      "translations": {
+        "en": "to wake up",
+        "ru": "просыпаться",
+        "sv": "vakna"
+      }
+    },
+    {
+      "term": "odottaa, odotan, odotti, odottanut",
+      "translations": {
+        "en": "to wait",
+        "ru": "ждать",
+        "sv": "vänta"
+      }
+    },
+    {
+      "term": "auttaa, autan, auttoi, auttanut",
+      "translations": {
+        "en": "to help",
+        "ru": "помогать",
+        "sv": "hjälpa"
+      }
+    },
+    {
+      "term": "kysyä, kysyn, kysyi, kysynyt",
+      "translations": {
+        "en": "to ask",
+        "ru": "спрашивать",
+        "sv": "fråga"
+      }
+    },
+    {
+      "term": "vastata, vastaan, vastasi, vastannut",
+      "translations": {
+        "en": "to answer",
+        "ru": "отвечать",
+        "sv": "svara"
+      }
+    },
+    {
+      "term": "tarvita, tarvitsen, tarvitsi, tarvinnut",
+      "translations": {
+        "en": "to need",
+        "ru": "нуждаться",
+        "sv": "behöva"
+      }
+    },
+    {
+      "term": "valita, valitsen, valitsi, valinnut",
+      "translations": {
+        "en": "to choose",
+        "ru": "выбирать",
+        "sv": "välja"
+      }
+    },
+    {
+      "term": "tavata, tapaan, tapasi, tavannut",
+      "translations": {
+        "en": "to meet",
+        "ru": "встречать",
+        "sv": "träffa"
+      },
+      "notes": "also: to spell out (a word)"
+    },
+    {
+      "term": "pelata, pelaan, pelasi, pelannut",
+      "translations": {
+        "en": "to play (a game)",
+        "ru": "играть",
+        "sv": "spela"
+      }
+    },
+    {
+      "term": "avata, avaan, avasi, avannut",
+      "translations": {
+        "en": "to open",
+        "ru": "открывать",
+        "sv": "öppna"
+      }
+    },
+    {
+      "term": "sulkea, suljen, sulki, sulkenut",
+      "translations": {
+        "en": "to close",
+        "ru": "закрывать",
+        "sv": "stänga"
+      }
+    },
+    {
+      "term": "kieltää, kiellän, kielsi, kieltänyt",
+      "translations": {
+        "en": "to forbid, to deny",
+        "ru": "запрещать",
+        "sv": "förbjuda"
+      }
+    },
+    {
+      "term": "ajatella, ajattelen, ajatteli, ajatellut",
+      "translations": {
+        "en": "to think",
+        "ru": "думать",
+        "sv": "tänka"
+      }
+    },
+    {
+      "term": "kävellä, kävelen, käveli, kävellyt",
+      "translations": {
+        "en": "to walk",
+        "ru": "идти пешком, гулять",
+        "sv": "promenera"
+      }
+    },
+    {
+      "term": "juosta, juoksen, juoksi, juossut",
+      "translations": {
+        "en": "to run",
+        "ru": "бежать",
+        "sv": "springa"
+      }
+    },
+    {
+      "term": "vanheta, vanhenen, vanheni, vanhennut",
+      "translations": {
+        "en": "to grow old",
+        "ru": "стареть",
+        "sv": "åldras"
+      }
+    },
+    {
+      "term": "paeta, pakenen, pakeni, paennut",
+      "translations": {
+        "en": "to flee",
+        "ru": "убегать, спасаться бегством",
+        "sv": "fly"
+      }
+    }
+  ]
+}
