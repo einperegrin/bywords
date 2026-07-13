@@ -27,6 +27,10 @@ async function ask(prompt) {
   return value;
 }
 
+export async function question(prompt) {
+  return (await ask(prompt)).trim();
+}
+
 export async function selectFromList(question, options, { defaultIndex = 0 } = {}) {
   const normalized = options.map((o) => (typeof o === 'string' ? { label: o, value: o } : o));
   for (let i = 0; i < normalized.length; i++) {

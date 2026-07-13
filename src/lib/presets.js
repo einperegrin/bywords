@@ -22,6 +22,11 @@ export function userPresetsDir() {
   return join(base, 'bywords', 'presets');
 }
 
+/** Absolute path where a user preset with the given id lives. */
+export function userPresetPath(id) {
+  return join(userPresetsDir(), `${id}.json`);
+}
+
 async function dirExists(p) {
   try {
     return (await stat(p)).isDirectory();
