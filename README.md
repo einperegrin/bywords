@@ -76,6 +76,7 @@ The same `--preset` / `--lang` / `--format` / `--yes` flags work with `add`.
 | ID | Language | Items | Translations |
 |----|----------|-------|--------------|
 | `es-top30-verbs` | Spanish | 30 | `en`, `ru` |
+| `fi-verb-types` | Finnish | 50 | `en`, `ru`, `sv` |
 | `sv-irregular-verbs` | Swedish | 76 | `en`, `ru` |
 
 ## Your own word lists
