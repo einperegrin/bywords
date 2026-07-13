@@ -4,6 +4,25 @@ export const FORMATS = [
   { id: 'term-only', label: 'term only', template: '{term}' },
 ];
 
+/**
+ * Merge incoming verbs into an existing list, dropping exact duplicates and
+ * preserving order (existing first, then the new ones).
+ * @returns {{ merged: string[], added: number }}
+ */
+export function mergeVerbs(existing, incoming) {
+  const seen = new Set(existing);
+  const merged = [...existing];
+  let added = 0;
+  for (const v of incoming) {
+    if (!seen.has(v)) {
+      seen.add(v);
+      merged.push(v);
+      added++;
+    }
+  }
+  return { merged, added };
+}
+
 export function renderItem(item, translationLang, formatId) {
   const format = FORMATS.find((f) => f.id === formatId);
   if (!format) throw new Error(`Unknown format: ${formatId}`);

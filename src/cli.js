@@ -4,9 +4,12 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { initCommand } from './commands/init.js';
+import { addCommand } from './commands/add.js';
 import { listCommand } from './commands/list.js';
 import { resetCommand } from './commands/reset.js';
 import { validateCommand } from './commands/validate.js';
+import { importCommand } from './commands/import.js';
+import { statusCommand } from './commands/status.js';
 import { discoverClaudeDirs, DEFAULT_CLAUDE_DIR, validateClaudeDir } from './lib/settings.js';
 import { selectFromList } from './lib/prompt.js';
 
@@ -19,17 +22,23 @@ Usage:
   bywords <command> [options]
 
 Commands:
-  init      Pick a preset and write it to Claude Code's settings.json
-  list      Show available presets
-  reset     Remove the spinnerVerbs block this tool wrote
-  validate  Check every bundled and user preset against the schema
+  init             Set the spinner words to a preset (replaces what's there)
+  add              Add a preset's words to the ones already set
+  list             Show available presets
+  status           Show the spinnerVerbs currently written to settings.json
+  import <file>    Import a CSV word list into your user presets
+  reset            Remove the spinnerVerbs block this tool wrote
+  validate         Check every bundled and user preset against the schema
 
 Options:
   --config-dir <path>  Claude config directory to use (default: ~/.claude)
-  --preset <id>        (init) Preset id, skips the interactive picker
-  --lang <code>        (init) Translation language, e.g. en, ru
-  --format <id>        (init) term-translation | translation-term | term-only
-  -y, --yes            (init) Skip the confirmation prompt
+  --preset <id>        (init/add) Preset id, skips the interactive picker
+  --lang <code>        (init/add) Translation language, e.g. en, ru
+  --format <id>        (init/add) term-translation | translation-term | term-only
+  --id <id>            (import) Preset id (default: from filename)
+  --language <code>    (import) Language being learned, e.g. es
+  --name <name>        (import) Human-readable preset name
+  -y, --yes            Skip confirmation / overwrite prompts
   -h, --help           Show this help
   -v, --version        Show version
 
@@ -45,6 +54,9 @@ const { values, positionals } = parseArgs({
     preset: { type: 'string' },
     lang: { type: 'string' },
     format: { type: 'string' },
+    id: { type: 'string' },
+    language: { type: 'string' },
+    name: { type: 'string' },
     yes: { type: 'boolean', short: 'y' },
   },
   allowPositionals: true,
@@ -94,8 +106,31 @@ try {
       });
       break;
     }
+    case 'add': {
+      const claudeDir = await resolveClaudeDir();
+      await addCommand(claudeDir, {
+        preset: values.preset,
+        lang: values.lang,
+        format: values.format,
+        yes: values.yes,
+      });
+      break;
+    }
     case 'list':
       await listCommand();
+      break;
+    case 'status': {
+      const claudeDir = await resolveClaudeDir();
+      await statusCommand(claudeDir);
+      break;
+    }
+    case 'import':
+      await importCommand(positionals[1], {
+        id: values.id,
+        language: values.language,
+        name: values.name,
+        yes: values.yes,
+      });
       break;
     case 'validate':
       await validateCommand();
