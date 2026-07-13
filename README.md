@@ -79,22 +79,61 @@ The same `--preset` / `--lang` / `--format` / `--yes` flags work with `add`.
 
 ## Your own word lists
 
-You don't have to edit the package to add lists. Drop preset JSON files in your
-user preset directory and they show up in `list` and `init` alongside the bundled
-ones (and survive package upgrades):
+You're not limited to the bundled presets — you can add your own **without touching
+the installed package**. A preset is a single JSON file kept in your user preset
+directory:
 
 ```
-$XDG_CONFIG_HOME/bywords/presets   # default: ~/.config/bywords/presets
+~/.config/bywords/presets/      # or $XDG_CONFIG_HOME/bywords/presets
 ```
 
-Override the location with the `BYWORDS_PRESETS_DIR` environment variable. A user
-preset with the same `id` as a bundled one takes precedence. Run `bywords validate`
-to check your files against the schema before using them.
+Set `BYWORDS_PRESETS_DIR` to use a different location. Anything you put here shows
+up in `list`, `init`, and `add` next to the bundled presets and survives package
+upgrades. There are two ways to create one.
 
-### Import from a spreadsheet
+### Option A — write a JSON file
 
-If your words live in a spreadsheet, export them as CSV and import — no JSON by
-hand. The header needs a `term` column plus one or more 2-letter language columns:
+1. Create the directory above if it doesn't exist.
+
+2. Add a file named after the preset id (id `fr-verbs` → `fr-verbs.json`) with this
+   shape:
+
+   ```json
+   {
+     "id": "fr-verbs",
+     "language": "fr",
+     "name": "My French verbs",
+     "items": [
+       { "term": "être",  "translations": { "en": "to be",   "ru": "быть" } },
+       { "term": "avoir", "translations": { "en": "to have", "ru": "иметь" } }
+     ]
+   }
+   ```
+
+   | Field | Meaning |
+   |-------|---------|
+   | `id` | Unique, kebab-case, **must match the filename** |
+   | `language` | ISO 639-1 code of the language you're learning (the `term` side) |
+   | `name` | Human-readable name shown in `list` / `init` |
+   | `items[].term` | The word or phrase in the target language |
+   | `items[].translations` | One or more translations keyed by 2-letter code; you choose which to display when you run `init` |
+   | `items[].notes` | Optional disambiguation — stored, never displayed |
+
+3. Check and use it:
+
+   ```sh
+   bywords validate                 # confirm it matches the schema
+   bywords init --preset fr-verbs   # or run `bywords init` and pick it
+   ```
+
+A user preset whose `id` matches a bundled one takes precedence, so you can also
+override a shipped list with your own.
+
+### Option B — import from a spreadsheet
+
+If your words already live in a spreadsheet, export them to CSV instead of writing
+JSON by hand. The header needs a `term` column plus one or more 2-letter language
+columns; any other column (e.g. `notes`) is ignored:
 
 ```csv
 term,en,ru
@@ -106,29 +145,22 @@ ser,to be,быть
 bywords import words.csv --id es-mine --language es --name "My Spanish words"
 ```
 
-This writes a validated preset into your user preset directory. `--id` defaults to
-the filename, `--language` (the language you're learning) is asked interactively if
-omitted, and extra non-language columns (e.g. a `notes` column) are ignored.
+This builds a validated preset in your user preset directory, ready for
+`bywords init --preset es-mine`. `--id` defaults to the filename and `--language`
+(the language you're learning) is asked interactively if omitted.
+
+The full field rules live in [`presets/schema.json`](presets/schema.json), and
+`bywords validate` checks every bundled and user preset against it.
 
 ## Contributing
 
-### Adding a preset
+### Contributing a preset to the project
 
-Bundled presets live in `presets/`. To contribute one, create a JSON file there
-following this schema (user-only lists can instead go in the directory above):
-
-```json
-{
-  "id": "fr-top30-verbs",
-  "language": "fr",
-  "name": "30 most frequent French verbs",
-  "items": [
-    { "term": "être", "translations": { "en": "to be", "ru": "быть" } }
-  ]
-}
-```
-
-`id` must be unique and match the filename. `language` is an ISO 639-1 code. Each item needs at least one translation key. `bywords validate` enforces all of this.
+To ship a preset with the package so everyone gets it, add its JSON file to the
+`presets/` directory in the repo (same shape as [your own word lists](#your-own-word-lists)
+above) and open a pull request. Keep translations accurate and the `id` matching
+the filename — `bywords validate` runs in CI and rejects anything that doesn't match
+the schema.
 
 ### Running locally
 
