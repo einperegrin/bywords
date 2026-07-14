@@ -11,7 +11,7 @@ import { validateCommand } from './commands/validate.js';
 import { importCommand } from './commands/import.js';
 import { statusCommand } from './commands/status.js';
 import { discoverClaudeDirs, DEFAULT_CLAUDE_DIR, validateClaudeDir } from './lib/settings.js';
-import { selectFromList } from './lib/prompt.js';
+import { selectFromList, selectManyFromList } from './lib/prompt.js';
 
 const pkgPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json');
 const pkg = JSON.parse(await readFile(pkgPath, 'utf8'));
@@ -94,11 +94,33 @@ async function resolveClaudeDir() {
   return chosen;
 }
 
+// Like resolveClaudeDir, but lets the user target several directories at once
+// (used by init/add so a preset can be applied everywhere in one run).
+async function resolveClaudeDirs() {
+  if (values['config-dir']) {
+    await validateClaudeDir(values['config-dir']);
+    return [values['config-dir']];
+  }
+
+  const dirs = await discoverClaudeDirs();
+  if (dirs.length === 1) return dirs;
+
+  const defaultIdx = dirs.indexOf(DEFAULT_CLAUDE_DIR);
+  console.log('Multiple Claude config directories found:');
+  const chosen = await selectManyFromList(
+    'Which config directories to use?',
+    dirs.map((d) => ({ label: d, value: d })),
+    { preselect: [defaultIdx >= 0 ? defaultIdx : 0] },
+  );
+  console.log('');
+  return chosen;
+}
+
 try {
   switch (command) {
     case 'init': {
-      const claudeDir = await resolveClaudeDir();
-      await initCommand(claudeDir, {
+      const claudeDirs = await resolveClaudeDirs();
+      await initCommand(claudeDirs, {
         preset: values.preset,
         lang: values.lang,
         format: values.format,
@@ -107,8 +129,8 @@ try {
       break;
     }
     case 'add': {
-      const claudeDir = await resolveClaudeDir();
-      await addCommand(claudeDir, {
+      const claudeDirs = await resolveClaudeDirs();
+      await addCommand(claudeDirs, {
         preset: values.preset,
         lang: values.lang,
         format: values.format,
