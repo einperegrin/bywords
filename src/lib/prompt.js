@@ -52,7 +52,7 @@ export async function selectFromList(question, options, { defaultIndex = 0 } = {
  * Accepts comma-separated numbers, ranges ("1-3"), and "all"/"a"/"*".
  * Returns null if the input is empty or references an out-of-range number.
  */
-function parseSelection(raw, max) {
+export function parseSelection(raw, max) {
   if (raw === 'all' || raw === 'a' || raw === '*') {
     return Array.from({ length: max }, (_, i) => i + 1);
   }
@@ -79,6 +79,40 @@ function parseSelection(raw, max) {
 }
 
 /**
+ * Pure state transition for the checkbox UI. Given the current
+ * `{ cursor, selected }` and an action, returns the next state plus a `done`
+ * flag (true when the user confirmed). Exported so the key handling can be
+ * unit-tested without a TTY; selectManyFromList drives it with real keystrokes.
+ *
+ * @param {{ cursor: number, selected: Set<number> }} state
+ * @param {'up'|'down'|'space'|'all'|'return'} action
+ * @param {number} count number of options
+ */
+export function reduceCheckbox(state, action, count) {
+  const { cursor } = state;
+  const selected = new Set(state.selected);
+  switch (action) {
+    case 'up':
+      return { cursor: (cursor - 1 + count) % count, selected, done: false };
+    case 'down':
+      return { cursor: (cursor + 1) % count, selected, done: false };
+    case 'space':
+      if (selected.has(cursor)) selected.delete(cursor);
+      else selected.add(cursor);
+      return { cursor, selected, done: false };
+    case 'all':
+      if (selected.size === count) selected.clear();
+      else for (let i = 0; i < count; i++) selected.add(i);
+      return { cursor, selected, done: false };
+    case 'return':
+      if (selected.size === 0) selected.add(cursor); // confirm with nothing checked picks the row
+      return { cursor, selected, done: true };
+    default:
+      return { cursor, selected, done: false };
+  }
+}
+
+/**
  * Interactive checkbox multi-select. Returns an array of the chosen `value`s.
  *
  * On a TTY: ↑/↓ move, space toggles, "a" toggles all, enter confirms.
@@ -102,8 +136,10 @@ export async function selectManyFromList(question, options, { preselect = [] } =
     }
   }
 
-  const selected = new Set(preselect.filter((i) => i >= 0 && i < items.length));
-  let cursor = 0;
+  let state = {
+    cursor: 0,
+    selected: new Set(preselect.filter((i) => i >= 0 && i < items.length)),
+  };
   let rendered = 0;
   const hint = '  ↑/↓ move · space toggle · a all · enter confirm';
 
@@ -111,9 +147,9 @@ export async function selectManyFromList(question, options, { preselect = [] } =
     if (!first) stdout.write(`\x1b[${rendered}A`);
     const lines = [question];
     items.forEach((it, i) => {
-      const box = selected.has(i) ? '[x]' : '[ ]';
-      const pointer = i === cursor ? '\x1b[36m>\x1b[0m' : ' ';
-      const label = i === cursor ? `\x1b[36m${it.label}\x1b[0m` : it.label;
+      const box = state.selected.has(i) ? '[x]' : '[ ]';
+      const pointer = i === state.cursor ? '\x1b[36m>\x1b[0m' : ' ';
+      const label = i === state.cursor ? `\x1b[36m${it.label}\x1b[0m` : it.label;
       lines.push(`${pointer} ${box} ${label}`);
     });
     lines.push(hint);
@@ -142,24 +178,15 @@ export async function selectManyFromList(question, options, { preselect = [] } =
         finish([]);
         closePrompt();
         process.exit(130);
-      } else if (key.name === 'up') {
-        cursor = (cursor - 1 + items.length) % items.length;
+      }
+      const action =
+        str === 'a' ? 'all' : ['up', 'down', 'space', 'return'].includes(key.name) ? key.name : null;
+      if (!action) return;
+      state = reduceCheckbox(state, action, items.length);
+      if (state.done) {
+        finish([...state.selected].sort((a, b) => a - b).map((i) => items[i].value));
+      } else {
         draw();
-      } else if (key.name === 'down') {
-        cursor = (cursor + 1) % items.length;
-        draw();
-      } else if (key.name === 'space') {
-        selected.has(cursor) ? selected.delete(cursor) : selected.add(cursor);
-        draw();
-      } else if (str === 'a') {
-        if (selected.size === items.length) selected.clear();
-        else items.forEach((_, i) => selected.add(i));
-        draw();
-      } else if (key.name === 'return') {
-        if (selected.size === 0) {
-          selected.add(cursor); // enter with nothing checked picks the highlighted row
-        }
-        finish([...selected].sort((a, b) => a - b).map((i) => items[i].value));
       }
     };
     stdin.on('keypress', onKey);
