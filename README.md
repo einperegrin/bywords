@@ -17,6 +17,7 @@ Requires Node.js ≥ 20 and [Claude Code](https://claude.ai/code).
 ```sh
 bywords init          # set the spinner words to a preset (replaces what's there)
 bywords add           # add a preset's words on top of the ones already set
+bywords rotate        # advance the visible window to the next slice of the deck
 bywords list          # show available presets
 bywords status        # show what's currently written to settings.json
 bywords import <csv>  # import a CSV word list into your user presets
@@ -70,6 +71,44 @@ bywords init --preset es-top30-verbs --lang ru --format term-translation --yes
 | `--config-dir <path>` | Claude config directory (default: `~/.claude`) |
 
 The same `--preset` / `--lang` / `--format` / `--yes` flags work with `add`.
+
+## Rotating through a big deck
+
+A long word list is wasted if Claude Code only ever surfaces the same handful.
+With `--rotate`, `bywords` keeps the whole list as a **deck** and writes only a
+**window** of it to `spinnerVerbs` at a time. `bywords rotate` slides the window
+to the next slice, so over time the entire deck cycles past your eyes instead of
+the first few words forever.
+
+```sh
+bywords init --preset sv-irregular-verbs --lang en --rotate --window 15 --shuffle
+# → deck of 76, a window of 15 written now
+bywords rotate         # → next 15 words
+bywords rotate         # → next 15, wrapping around the end of the deck
+```
+
+| Flag | Applies to | Meaning |
+|------|-----------|---------|
+| `--rotate` | `init` | Keep the full list as a deck; show a window at a time |
+| `--window <n>` | `init` | How many words are visible at once (default: 15) |
+| `--shuffle` | `init` | Shuffle the deck order once, so windows aren't alphabetical |
+| `--daily` | `rotate` | Do nothing if the deck was rotated less than 24h ago |
+
+`bywords add` extends the deck (not just the visible window), and `bywords status`
+shows where the window sits: `window: 15 — #16..#30 of 76`. `bywords reset` clears
+the deck along with the `spinnerVerbs` block.
+
+Rotation is manual — `bywords` doesn't run in the background. To advance it on a
+schedule, point cron (or any scheduler) at `rotate --daily`, which is a no-op
+until a day has passed, so running it hourly is safe:
+
+```sh
+0 * * * * bywords rotate --daily
+```
+
+Window changes take effect the next time Claude Code starts. The deck lives in
+`~/.config/bywords/rotation.json` (or `$BYWORDS_STATE_DIR`); each Claude config
+directory is tracked independently.
 
 ## Presets
 

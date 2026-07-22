@@ -10,6 +10,7 @@ import { resetCommand } from './commands/reset.js';
 import { validateCommand } from './commands/validate.js';
 import { importCommand } from './commands/import.js';
 import { statusCommand } from './commands/status.js';
+import { rotateCommand } from './commands/rotate.js';
 import { discoverClaudeDirs, DEFAULT_CLAUDE_DIR, validateClaudeDir } from './lib/settings.js';
 import { selectFromList, selectManyFromList } from './lib/prompt.js';
 
@@ -24,6 +25,7 @@ Usage:
 Commands:
   init             Set the spinner words to a preset (replaces what's there)
   add              Add a preset's words to the ones already set
+  rotate           Advance the active window to the next slice of the deck
   list             Show available presets
   status           Show the spinnerVerbs currently written to settings.json
   import <file>    Import a CSV word list into your user presets
@@ -35,6 +37,10 @@ Options:
   --preset <id>        (init/add) Preset id, skips the interactive picker
   --lang <code>        (init/add) Translation language, e.g. en, ru
   --format <id>        (init/add) term-translation | translation-term | term-only
+  --rotate             (init) Keep the full list as a deck, show a window at a time
+  --window <n>         (init) Words visible at once in rotation mode (default: 15)
+  --shuffle            (init) Shuffle the deck order once before rotating
+  --daily              (rotate) Skip if the deck was rotated less than a day ago
   --id <id>            (import) Preset id (default: from filename)
   --language <code>    (import) Language being learned, e.g. es
   --name <name>        (import) Human-readable preset name
@@ -54,6 +60,10 @@ const { values, positionals } = parseArgs({
     preset: { type: 'string' },
     lang: { type: 'string' },
     format: { type: 'string' },
+    rotate: { type: 'boolean' },
+    window: { type: 'string' },
+    shuffle: { type: 'boolean' },
+    daily: { type: 'boolean' },
     id: { type: 'string' },
     language: { type: 'string' },
     name: { type: 'string' },
@@ -125,7 +135,14 @@ try {
         lang: values.lang,
         format: values.format,
         yes: values.yes,
+        rotate: values.rotate,
+        window: values.window,
+        shuffle: values.shuffle,
       });
+      break;
+    }
+    case 'rotate': {
+      await rotateCommand({ configDir: values['config-dir'], daily: values.daily });
       break;
     }
     case 'add': {
