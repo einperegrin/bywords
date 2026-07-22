@@ -3,13 +3,16 @@ import assert from 'node:assert/strict';
 import { mkdtemp, writeFile, mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { access } from 'node:fs/promises';
 import {
   windowSlice,
+  windowRange,
   nextCursor,
   shuffle,
   readState,
   writeState,
   getDeck,
+  stateFilePath,
 } from '../src/lib/rotation.js';
 import { resolveWindow, initCommand } from '../src/commands/init.js';
 import { rotateCommand } from '../src/commands/rotate.js';
@@ -29,6 +32,13 @@ test('windowSlice returns the whole deck when the window covers it', () => {
   const deck = ['a', 'b'];
   assert.deepEqual(windowSlice(deck, 0, 5), ['a', 'b']);
   assert.deepEqual(windowSlice([], 0, 3), []);
+});
+
+test('windowRange gives 1-based bounds, wraps, and clamps to the deck', () => {
+  assert.deepEqual(windowRange(0, 4, 10), [1, 4]);
+  assert.deepEqual(windowRange(8, 4, 10), [9, 2]); // covers #9,#10,#1,#2
+  assert.deepEqual(windowRange(0, 40, 30), [1, 30]); // window ≥ deck
+  assert.deepEqual(windowRange(0, 3, 0), [0, 0]);
 });
 
 test('nextCursor advances by the window and wraps; no-op when window ≥ deck', () => {
@@ -165,6 +175,14 @@ test('add extends the deck without moving the cursor', async () => {
     assert.deepEqual(entry.deck, ['w0', 'w1', 'w2', 'w3', 'x0', 'x1']);
     assert.equal(entry.cursor, 0);
     assert.deepEqual((await readSettings(claudeDir)).spinnerVerbs.verbs, ['w0', 'w1']);
+  });
+});
+
+test('a non-rotation init does not create a state file', async () => {
+  await withEnv(async ({ claudeDir, presetsDir }) => {
+    await writeFile(join(presetsDir, 'deck.json'), makePreset('deck', ['w0', 'w1']));
+    await initCommand(claudeDir, { preset: 'deck', lang: 'en', format: 'term-only', yes: true });
+    await assert.rejects(() => access(stateFilePath()), 'state file should not exist');
   });
 });
 

@@ -82,6 +82,17 @@ export function windowSlice(deck, cursor, size) {
   return out;
 }
 
+/**
+ * The 1-based `[from, to]` index range the window currently covers, accounting
+ * for wrap-around (so `to` can be smaller than `from`). When the window spans
+ * the whole deck the range is the whole deck.
+ */
+export function windowRange(cursor, size, deckLen) {
+  if (deckLen === 0) return [0, 0];
+  if (size >= deckLen) return [1, deckLen];
+  return [cursor + 1, ((cursor + size - 1) % deckLen) + 1];
+}
+
 /** The cursor after advancing one window. A no-op when the window covers the deck. */
 export function nextCursor(cursor, size, deckLen) {
   if (deckLen === 0 || size >= deckLen) return 0;

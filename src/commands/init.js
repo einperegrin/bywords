@@ -159,6 +159,7 @@ export async function initCommand(claudeDirs, opts = {}) {
 
   const state = await readState();
   const now = new Date().toISOString();
+  let stateChanged = false;
 
   for (const claudeDir of dirs) {
     const { settings: SETTINGS_PATH, backup: BACKUP_PATH } = settingsPaths(claudeDir);
@@ -169,9 +170,10 @@ export async function initCommand(claudeDirs, opts = {}) {
 
     if (rotate) {
       setDeck(state, claudeDir, { deck, window, cursor: 0, shuffled: !!opts.shuffle, lastRotated: now });
-    } else {
+      stateChanged = true;
+    } else if (clearDeck(state, claudeDir)) {
       // A plain init replaces everything, so any prior rotation deck is stale.
-      clearDeck(state, claudeDir);
+      stateChanged = true;
     }
 
     if (!hadBackupBefore && (await fileExists(BACKUP_PATH))) {
@@ -184,7 +186,7 @@ export async function initCommand(claudeDirs, opts = {}) {
     }
   }
 
-  await writeState(state);
+  if (stateChanged) await writeState(state);
 
   if (rotate) {
     console.log('\nRun `bywords rotate` to advance the window. Restart Claude Code to see changes.');

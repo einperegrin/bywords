@@ -1,5 +1,5 @@
 import { readSettings, settingsPaths } from '../lib/settings.js';
-import { readState, getDeck } from '../lib/rotation.js';
+import { readState, getDeck, windowRange } from '../lib/rotation.js';
 
 export async function statusCommand(claudeDir) {
   const { settings: SETTINGS_PATH } = settingsPaths(claudeDir);
@@ -19,9 +19,7 @@ export async function statusCommand(claudeDir) {
   const entry = getDeck(state, claudeDir);
   if (entry) {
     const deckLen = entry.deck.length;
-    const cursor = entry.cursor ?? 0;
-    const from = cursor + 1;
-    const to = ((cursor + entry.window - 1) % deckLen) + 1;
+    const [from, to] = windowRange(entry.cursor ?? 0, entry.window, deckLen);
     console.log(`deck:  ${deckLen} words${entry.shuffled ? ' (shuffled)' : ''}`);
     console.log(`window: ${verbs.length} — #${from}..#${to} of ${deckLen}`);
     if (entry.lastRotated) console.log(`rotated: ${entry.lastRotated}`);

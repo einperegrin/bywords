@@ -1,5 +1,5 @@
 import { readSettings, writeSettings, settingsPaths, validateClaudeDir } from '../lib/settings.js';
-import { readState, writeState, getDeck, windowSlice, nextCursor } from '../lib/rotation.js';
+import { readState, writeState, getDeck, windowSlice, nextCursor, windowRange } from '../lib/rotation.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -65,8 +65,7 @@ export async function rotateCommand(opts = {}) {
     entry.lastRotated = new Date(now).toISOString();
     changed = true;
 
-    const from = cursor + 1;
-    const to = ((cursor + entry.window - 1) % deckLen) + 1;
+    const [from, to] = windowRange(cursor, entry.window, deckLen);
     console.log(`✓ ${SETTINGS_PATH}: window → #${from}..#${to} of ${deckLen}`);
   }
 
