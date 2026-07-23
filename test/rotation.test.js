@@ -14,7 +14,7 @@ import {
   getDeck,
   stateFilePath,
 } from '../src/lib/rotation.js';
-import { resolveWindow, initCommand } from '../src/commands/init.js';
+import { resolveWindow, parseWindowAnswer, initCommand } from '../src/commands/init.js';
 import { rotateCommand } from '../src/commands/rotate.js';
 import { addCommand } from '../src/commands/add.js';
 import { readSettings } from '../src/lib/settings.js';
@@ -60,6 +60,15 @@ test('resolveWindow validates and defaults', () => {
   assert.equal(resolveWindow('4'), 4);
   assert.throws(() => resolveWindow('0'), /positive integer/);
   assert.throws(() => resolveWindow('x'), /positive integer/);
+});
+
+test('parseWindowAnswer maps the wizard answer to a rotation choice', () => {
+  assert.deepEqual(parseWindowAnswer('', 30), { rotate: false, window: 0 });
+  assert.deepEqual(parseWindowAnswer('all', 30), { rotate: false, window: 0 });
+  assert.deepEqual(parseWindowAnswer('10', 30), { rotate: true, window: 10 });
+  assert.deepEqual(parseWindowAnswer('30', 30), { rotate: false, window: 0 }); // covers the deck
+  assert.equal(parseWindowAnswer('0', 30), null);
+  assert.equal(parseWindowAnswer('nope', 30), null);
 });
 
 // --- state round-trip -------------------------------------------------------
@@ -128,6 +137,19 @@ test('init --rotate writes a window and remembers the deck', async () => {
     assert.equal(entry.deck.length, 10);
     assert.equal(entry.window, 4);
     assert.equal(entry.cursor, 0);
+  });
+});
+
+test('--window turns on rotation even without --rotate', async () => {
+  await withEnv(async ({ claudeDir, presetsDir }) => {
+    const terms = Array.from({ length: 8 }, (_, i) => `w${i}`);
+    await writeFile(join(presetsDir, 'deck.json'), makePreset('deck', terms));
+    await initCommand(claudeDir, {
+      preset: 'deck', lang: 'en', format: 'term-only', yes: true, window: '3',
+    });
+    const entry = getDeck(await readState(), claudeDir);
+    assert.equal(entry.window, 3);
+    assert.deepEqual((await readSettings(claudeDir)).spinnerVerbs.verbs, ['w0', 'w1', 'w2']);
   });
 });
 

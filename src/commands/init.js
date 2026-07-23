@@ -10,7 +10,7 @@ import {
   settingsPaths,
 } from '../lib/settings.js';
 import { FORMATS, renderPreset, renderItem } from '../lib/format.js';
-import { selectFromList, confirm, closePrompt } from '../lib/prompt.js';
+import { selectFromList, confirm, question, closePrompt } from '../lib/prompt.js';
 import {
   readState,
   writeState,
@@ -29,6 +29,22 @@ export function resolveWindow(value) {
     throw new Error(`--window must be a positive integer, got "${value}".`);
   }
   return n;
+}
+
+/**
+ * Interpret the wizard's window answer against a deck of `deckSize` words.
+ * Blank / "all" (or a number that already covers the deck) means no rotation;
+ * a positive number smaller than the deck turns rotation on. Returns null for
+ * input that is neither, so the caller can re-ask.
+ * @returns {{ rotate: boolean, window: number } | null}
+ */
+export function parseWindowAnswer(raw, deckSize) {
+  const s = String(raw).trim().toLowerCase();
+  if (s === '' || s === 'all') return { rotate: false, window: 0 };
+  const n = Number(s);
+  if (!Number.isInteger(n) || n < 1) return null;
+  if (n >= deckSize) return { rotate: false, window: 0 };
+  return { rotate: true, window: n };
 }
 
 /**
@@ -128,8 +144,24 @@ export async function initCommand(claudeDirs, opts = {}) {
 
   // In rotation mode the full list becomes a deck; only a window of it is
   // written to spinnerVerbs at a time, and `bywords rotate` advances it.
-  const rotate = !!opts.rotate;
-  const window = rotate ? resolveWindow(opts.window) : 0;
+  // Flags win; otherwise the wizard asks (skipped under --yes, which keeps the
+  // whole list visible — the non-interactive default).
+  let rotate = !!opts.rotate || opts.window !== undefined;
+  let window = rotate ? resolveWindow(opts.window) : 0;
+  if (!rotate && !opts.yes) {
+    while (true) {
+      const raw = await question(
+        `\nRotation — how many of the ${verbs.length} words to show at once ` +
+          `(the rest rotate in with \`bywords rotate\`), or Enter for all [all]: `,
+      );
+      const answer = parseWindowAnswer(raw, verbs.length);
+      if (answer) {
+        ({ rotate, window } = answer);
+        break;
+      }
+      console.log('  Enter a positive number, or leave blank for all.');
+    }
+  }
   const deck = rotate && opts.shuffle ? shuffle(verbs) : verbs;
   const active = rotate ? windowSlice(deck, 0, window) : verbs;
 

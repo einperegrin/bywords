@@ -47,8 +47,16 @@ Display format:
   3) term only           (e.g. "hablar")
 Pick a format [1]:
 
+Rotation — how many of the 100 words to show at once (the rest rotate in
+with `bywords rotate`), or Enter for all [all]:
+
 Write? [Y/n]:
 ```
+
+Press Enter at the rotation step to keep every word visible (the old behaviour);
+enter a number to show a window that size and cycle the rest in with
+[`bywords rotate`](#rotating-through-a-big-deck). The `--window` / `--shuffle`
+flags do the same non-interactively.
 
 The result is written to `~/.claude/settings.json` under `spinnerVerbs`. Existing settings are never overwritten — only that key is touched. A one-time backup is created at `settings.json.bak` before the first write.
 
