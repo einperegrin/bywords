@@ -10,7 +10,42 @@ import {
   settingsPaths,
 } from '../lib/settings.js';
 import { FORMATS, renderPreset, renderItem } from '../lib/format.js';
-import { selectFromList, confirm, closePrompt } from '../lib/prompt.js';
+import { selectFromList, confirm, question, closePrompt } from '../lib/prompt.js';
+import {
+  readState,
+  writeState,
+  setDeck,
+  clearDeck,
+  windowSlice,
+  shuffle,
+  DEFAULT_WINDOW,
+} from '../lib/rotation.js';
+
+/** Parse and validate a --window value, falling back to the default. */
+export function resolveWindow(value) {
+  if (value === undefined) return DEFAULT_WINDOW;
+  const n = Number(value);
+  if (!Number.isInteger(n) || n < 1) {
+    throw new Error(`--window must be a positive integer, got "${value}".`);
+  }
+  return n;
+}
+
+/**
+ * Interpret the wizard's window answer against a deck of `deckSize` words.
+ * Blank / "all" (or a number that already covers the deck) means no rotation;
+ * a positive number smaller than the deck turns rotation on. Returns null for
+ * input that is neither, so the caller can re-ask.
+ * @returns {{ rotate: boolean, window: number } | null}
+ */
+export function parseWindowAnswer(raw, deckSize) {
+  const s = String(raw).trim().toLowerCase();
+  if (s === '' || s === 'all') return { rotate: false, window: 0 };
+  const n = Number(s);
+  if (!Number.isInteger(n) || n < 1) return null;
+  if (n >= deckSize) return { rotate: false, window: 0 };
+  return { rotate: true, window: n };
+}
 
 /**
  * Run the preset / language / format selection flow (interactive unless the
@@ -99,15 +134,49 @@ export async function selectVerbs(opts = {}) {
 
 /**
  * @param {string | string[]} claudeDirs One or more Claude config directories.
- * @param {{ preset?: string, lang?: string, format?: string, yes?: boolean }} [opts]
+ * @param {{ preset?: string, lang?: string, format?: string, yes?: boolean,
+ *           rotate?: boolean, window?: string, shuffle?: boolean }} [opts]
  */
 export async function initCommand(claudeDirs, opts = {}) {
   const dirs = Array.isArray(claudeDirs) ? claudeDirs : [claudeDirs];
 
   const { verbs } = await selectVerbs(opts);
 
-  console.log(`\nPreview (first 3 of ${verbs.length}):`);
-  for (const v of verbs.slice(0, 3)) console.log(`  ${v}`);
+  // In rotation mode the full list becomes a deck; only a window of it is
+  // written to spinnerVerbs at a time, and `bywords rotate` advances it.
+  // Flags win; otherwise the wizard asks (skipped under --yes, which keeps the
+  // whole list visible — the non-interactive default).
+  let rotate = !!opts.rotate || opts.window !== undefined;
+  let window = rotate ? resolveWindow(opts.window) : 0;
+  if (!rotate && !opts.yes) {
+    while (true) {
+      const raw = await question(
+        `\nRotation — how many of the ${verbs.length} words to show at once ` +
+          `(the rest rotate in with \`bywords rotate\`), or Enter for all [all]: `,
+      );
+      const answer = parseWindowAnswer(raw, verbs.length);
+      if (answer) {
+        ({ rotate, window } = answer);
+        break;
+      }
+      console.log('  Enter a positive number, or leave blank for all.');
+    }
+  }
+  const deck = rotate && opts.shuffle ? shuffle(verbs) : verbs;
+  const active = rotate ? windowSlice(deck, 0, window) : verbs;
+
+  if (rotate) {
+    if (window >= deck.length) {
+      console.log(
+        `\nNote: window (${window}) is ≥ the deck (${deck.length}); every word stays visible and rotate is a no-op.`,
+      );
+    }
+    console.log(`\nDeck of ${deck.length}, showing a window of ${active.length}.`);
+    console.log(`Preview (first 3 of ${active.length} in view):`);
+  } else {
+    console.log(`\nPreview (first 3 of ${active.length}):`);
+  }
+  for (const v of active.slice(0, 3)) console.log(`  ${v}`);
 
   console.log(`\nTarget${dirs.length > 1 ? 's' : ''} (replaces any words currently set):`);
   for (const dir of dirs) console.log(`  ${settingsPaths(dir).settings}`);
@@ -120,17 +189,40 @@ export async function initCommand(claudeDirs, opts = {}) {
     return;
   }
 
+  const state = await readState();
+  const now = new Date().toISOString();
+  let stateChanged = false;
+
   for (const claudeDir of dirs) {
     const { settings: SETTINGS_PATH, backup: BACKUP_PATH } = settingsPaths(claudeDir);
     const settings = await readSettings(claudeDir);
     const hadBackupBefore = await fileExists(BACKUP_PATH);
-    settings.spinnerVerbs = { mode: 'replace', verbs };
+    settings.spinnerVerbs = { mode: 'replace', verbs: active };
     await writeSettings(settings, claudeDir);
+
+    if (rotate) {
+      setDeck(state, claudeDir, { deck, window, cursor: 0, shuffled: !!opts.shuffle, lastRotated: now });
+      stateChanged = true;
+    } else if (clearDeck(state, claudeDir)) {
+      // A plain init replaces everything, so any prior rotation deck is stale.
+      stateChanged = true;
+    }
 
     if (!hadBackupBefore && (await fileExists(BACKUP_PATH))) {
       console.log(`✓ Backed up existing settings to ${BACKUP_PATH}`);
     }
-    console.log(`✓ Wrote ${verbs.length} spinnerVerbs to ${SETTINGS_PATH}`);
+    if (rotate) {
+      console.log(`✓ Wrote a window of ${active.length} (deck of ${deck.length}) to ${SETTINGS_PATH}`);
+    } else {
+      console.log(`✓ Wrote ${active.length} spinnerVerbs to ${SETTINGS_PATH}`);
+    }
   }
-  console.log('\nRestart Claude Code to see the new spinner words.');
+
+  if (stateChanged) await writeState(state);
+
+  if (rotate) {
+    console.log('\nRun `bywords rotate` to advance the window. Restart Claude Code to see changes.');
+  } else {
+    console.log('\nRestart Claude Code to see the new spinner words.');
+  }
 }

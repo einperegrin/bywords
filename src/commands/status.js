@@ -1,4 +1,5 @@
 import { readSettings, settingsPaths } from '../lib/settings.js';
+import { readState, getDeck, windowRange } from '../lib/rotation.js';
 
 export async function statusCommand(claudeDir) {
   const { settings: SETTINGS_PATH } = settingsPaths(claudeDir);
@@ -13,7 +14,19 @@ export async function statusCommand(claudeDir) {
 
   const verbs = Array.isArray(sv.verbs) ? sv.verbs : [];
   console.log(`mode:  ${sv.mode ?? '(unset)'}`);
-  console.log(`verbs: ${verbs.length}`);
+
+  const state = await readState();
+  const entry = getDeck(state, claudeDir);
+  if (entry) {
+    const deckLen = entry.deck.length;
+    const [from, to] = windowRange(entry.cursor ?? 0, entry.window, deckLen);
+    console.log(`deck:  ${deckLen} words${entry.shuffled ? ' (shuffled)' : ''}`);
+    console.log(`window: ${verbs.length} — #${from}..#${to} of ${deckLen}`);
+    if (entry.lastRotated) console.log(`rotated: ${entry.lastRotated}`);
+  } else {
+    console.log(`verbs: ${verbs.length}`);
+  }
+
   for (const v of verbs.slice(0, 5)) console.log(`  ${v}`);
   if (verbs.length > 5) console.log(`  … and ${verbs.length - 5} more`);
 }

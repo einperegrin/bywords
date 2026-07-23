@@ -37,7 +37,7 @@ test('bundled presets are all valid and loadable', async () => {
   assert.ok(results.length >= 1);
   for (const r of results) assert.deepEqual(r.errors, [], `${r.file}: ${r.errors.join('; ')}`);
   const presets = await loadPresets();
-  assert.ok(presets.some((p) => p.id === 'es-top30-verbs'));
+  assert.ok(presets.some((p) => p.id === 'es-common-verbs'));
 });
 
 test('user presets directory is merged in', async () => {
@@ -69,7 +69,7 @@ test('an invalid user preset is skipped, not fatal', async () => {
   try {
     await writeFile(join(dir, 'broken.json'), '{ not json');
     const presets = await loadPresets();
-    assert.ok(presets.some((p) => p.id === 'es-top30-verbs'));
+    assert.ok(presets.some((p) => p.id === 'es-common-verbs'));
   } finally {
     process.stderr.write = origWrite;
     delete process.env.BYWORDS_PRESETS_DIR;
