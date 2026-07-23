@@ -33,7 +33,7 @@ keeps what's there and appends another preset's words (duplicates are dropped).
 
 ```
 Available presets:
-  1) es-top100-verbs — 100 most frequent Spanish verbs
+  1) es-common-verbs — 100 most frequent Spanish verbs
 Pick a preset [1]:
 
 Available translation languages:
@@ -67,7 +67,7 @@ Restart Claude Code to see the new spinner words.
 Every choice can be passed as a flag, which skips the wizard — handy for dotfiles and scripts:
 
 ```sh
-bywords init --preset es-top100-verbs --lang ru --format term-translation --yes
+bywords init --preset es-common-verbs --lang ru --format term-translation --yes
 ```
 
 | Flag | Meaning |
@@ -122,7 +122,7 @@ directory is tracked independently.
 
 | ID | Language | Items | Translations |
 |----|----------|-------|--------------|
-| `es-top100-verbs` | Spanish | 100 | `en`, `ru` |
+| `es-common-verbs` | Spanish | 100 | `en`, `ru` |
 | `fi-verb-types` | Finnish | 50 | `en`, `ru`, `sv` |
 | `sv-irregular-verbs` | Swedish | 76 | `en`, `ru` |
 
